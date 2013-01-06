@@ -44,5 +44,6 @@
     (format t "~&TESTING SYSTEM ~A~%" system)
     (ql:quickload system :verbose t)
     (format t "~&SUCCESSFULLY LOADED SYSTEM ~A (I hope)~%" system)
-    (asdf:test-system system :verbose t)
-    (format t "~&SUCCESSFULLY TESTED SYSTEM ~A (I hope)~%" system)))
+    ;;(asdf:test-system system :verbose t)
+    ;;(format t "~&SUCCESSFULLY TESTED SYSTEM ~A (I hope)~%" system)
+    (values)))

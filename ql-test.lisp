@@ -26,8 +26,6 @@
   (ql-dist:provided-systems (ql-dist:dist "quicklisp")))
 
 (defun test-all-quicklisp-systems (&key from)
-  (loop
-    :with all-systems = (mapcar #'ql-dist:name (quicklisp-provided-sytems))
-    :with systems = (if from (member from all-systems :test 'equal) all-systems)
-    :for s :in systems
-    :do (test-system s)))
+  (let ((all-systems (mapcar #'ql-dist:name (quicklisp-provided-sytems))))
+    (map () #'test-system
+         (if from (member from all-systems :test 'equal) all-systems))))

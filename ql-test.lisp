@@ -19,12 +19,15 @@
     (ensure-directories-exist output)
     (run
      `((> ,output) (>& 2 1) (<& -)
-       ,@(test-system-command system :implementation-type implementation-type)))))
+       ,@(test-system-command system :implementation-type implementation-type))
+     :on-error nil)))
 
 (defun quicklisp-provided-sytems ()
   (ql-dist:provided-systems (ql-dist:dist "quicklisp")))
 
-(defun test-all-quicklisp-systems ()
-  (loop :for s :in (quicklisp-provided-sytems)
-        :for n = (ql-dist:name s)
-        :do (test-system n)))
+(defun test-all-quicklisp-systems (&key from)
+  (loop
+    :with all-systems = (mapcar #'ql-dist:name (quicklisp-provided-sytems))
+    :with systems = (if from (member from all-systems :test 'equal) all-systems)
+    :for s :in systems
+    :do (test-system s)))

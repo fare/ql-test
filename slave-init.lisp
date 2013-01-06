@@ -28,7 +28,7 @@
 
 (defun call-with-ql-test-context (thunk)
   (block nil
-    (handler-bind ((error
+    (handler-bind (((or error serious-condition)
                      (lambda (c)
                        (format *error-output* "~%~A~%" c)
                        (print-backtrace *error-output*)
@@ -42,7 +42,7 @@
 (defun ql-test-system (system)
   (with-ql-test-context ()
     (format t "~&TESTING SYSTEM ~A~%" system)
-    (asdf:load-system system :verbose t)
+    (ql:quickload system :verbose t)
     (format t "~&SUCCESSFULLY LOADED SYSTEM ~A (I hope)~%" system)
     (asdf:test-system system :verbose t)
     (format t "~&SUCCESSFULLY TESTED SYSTEM ~A (I hope)~%" system)))

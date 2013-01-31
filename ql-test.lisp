@@ -3,7 +3,7 @@
 (defparameter *ql-test-directory* (subpathname *temporary-directory* "ql-test/"))
 
 (defun test-system-command (system
-                            &key (implementation-type *lisp-implementation-type*))
+                            &key (implementation-type *implementation-type*))
   (lisp-invocation-arglist
    :implementation-type implementation-type
    :eval (with-standard-io-syntax
@@ -14,8 +14,8 @@
                      `(asdf::ql-test-system ,(asdf:coerce-name system))
                      (quit-form :code 0))))))
 
-(defun test-system (system &key (implementation-type *lisp-implementation-type*))
-  (let ((output (subpathname *ql-test-directory* (strcat (asdf:coerce-name system) ".log"))))
+(defun test-system (system &key (implementation-type *implementation-type*))
+  (let ((output (subpathname *ql-test-directory* (asdf:coerce-name system) :type "log")))
     (ensure-directories-exist output)
     (run
      `((> ,output) (>& 2 1) (<& -)

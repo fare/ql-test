@@ -1,4 +1,4 @@
 (cl:defpackage :ql-test
-  (:use :cl :inferior-shell :xcvb-utils :lisp-invocation)
+  (:use :cl :inferior-shell :asdf/driver :fare-utils :lisp-invocation)
   (:export
    #:test-all-quicklisp-systems))

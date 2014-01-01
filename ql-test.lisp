@@ -22,14 +22,18 @@
        ,@(test-system-command system :implementation-type implementation-type))
      :on-error nil)))
 
-(defun quicklisp-provided-sytems ()
+(defun bad-quicklisp-system-p (system) ;; for 2013121200
+  (member (ql-dist:name system) '("XHTMLambda") :test 'equal))
+
+(defun quicklisp-provided-systems ()
   (ql-dist:provided-systems (ql-dist:dist "quicklisp")))
 
 (defun quicklisp-provided-system-names ()
-  (mapcar #'ql-dist:name (quicklisp-provided-sytems)))
+  (mapcar #'ql-dist:name (quicklisp-provided-systems)))
 
 (defun install-all-quicklisp-provided-systems ()
-  (map () 'ql-dist:ensure-installed (quicklisp-provided-sytems)))
+  (map () 'ql-dist:ensure-installed
+       (remove-if 'bad-quicklisp-system-p (quicklisp-provided-sytems))))
 
 (defun test-all-quicklisp-systems (&key from)
   (let ((all-systems (quicklisp-provided-system-names)))

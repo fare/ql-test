@@ -33,7 +33,7 @@
 
 (defun install-all-quicklisp-provided-systems ()
   (map () 'ql-dist:ensure-installed
-       (remove-if 'bad-quicklisp-system-p (quicklisp-provided-sytems))))
+       (remove-if 'bad-quicklisp-system-p (quicklisp-provided-systems))))
 
 (defun test-all-quicklisp-systems (&key from)
   (let ((all-systems (quicklisp-provided-system-names)))

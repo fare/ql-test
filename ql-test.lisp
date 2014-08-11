@@ -39,3 +39,6 @@
   (let ((all-systems (quicklisp-provided-system-names)))
     (map () #'test-system
          (if from (member from all-systems :test 'equal) all-systems))))
+
+(defun clean-old-quicklisp-systems ()
+  (ql-dist::clean (ql-dist::dist "quicklisp")))

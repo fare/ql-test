@@ -1,7 +1,10 @@
-(in-package :asdf)
+#-asdf3 (error "ASDF 3 or bust!")
 
-(defsystem :load-quicklisp
-  :defsystem-depends-on (:asdf))
+(defsystem "load-quicklisp"
+  :version "1.0.0"
+  :description "load quicklisp"
+  :author "Francois-Rene Rideau"
+  :license "MIT")
 
 (block nil
   (flet ((try (x) (when (probe-file x) (return (load x)))))

@@ -42,3 +42,9 @@
 
 (defun clean-old-quicklisp-systems ()
   (ql-dist::clean (ql-dist::dist "quicklisp")))
+
+(defun current-quicklisp-asdf-version ()
+  (match (run "wget -O - http://beta.quicklisp.org/quickstart/asdf.lisp"
+              :output '(:line :at 1) :on-error 'continue)
+    ((ppcre ";;; This is ASDF ([.0-9]+): Another System Definition Facility." version)
+     version)))

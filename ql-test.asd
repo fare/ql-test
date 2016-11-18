@@ -3,10 +3,7 @@
   :description "Trivial functions to help test Quicklisp"
   :author "Francois-Rene Rideau"
   :license "MIT"
-  :depends-on ("load-quicklisp" "fare-utils"
-               "inferior-shell" "lisp-invocation"
-               "optima.ppcre")
+  :class package-inferred-system
+  :depends-on ("ql-test/ql-test")
   :components
-  ((:static-file "slave-init.lisp")
-   (:file "package")
-   (:file "ql-test" :depends-on ("package"))))
+  ((:static-file "slave-init.lisp")))

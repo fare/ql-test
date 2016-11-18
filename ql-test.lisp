@@ -1,3 +1,16 @@
+(uiop:define-package :ql-test
+  (:nicknames :ql-test/ql-test)
+  (:use :cl :uiop :fare-utils
+   :inferior-shell :lisp-invocation
+   :optima :optima.ppcre)
+  (:export
+   #:current-quicklisp-asdf-version
+   #:install-all-quicklisp-provided-systems
+   #:test-all-quicklisp-systems
+   #:clean-old-quicklisp-systems
+   #:quicklisp-software-directory
+   #:qgrep
+   #:systems-whose-name-doesnt-match-the-asd))
 (in-package :ql-test)
 
 (defparameter *ql-test-directory* (subpathname *temporary-directory* "ql-test/"))
@@ -48,3 +61,23 @@
               :output '(:line :at 1) :on-error 'continue)
     ((ppcre ";;; This is ASDF ([.0-9]+): Another System Definition Facility." version)
      version)))
+
+(defun quicklisp-software-directory ()
+  (subpathname (ql-dist:base-directory (ql-dist:find-dist "quicklisp")) "software/"))
+
+(defun qgrep (arg &optional (output :lines))
+  (run `(pipe (grep -ri ,arg) (grep -v "/asdf\\.lisp:"))
+       :directory (quicklisp-software-directory)
+       :output output))
+
+(defun systems-whose-name-doesnt-match-the-asd ()
+  (qgrep "defsystem "
+         (lambda (s)
+           (loop :for l = (read-line s nil nil) :while l :nconc
+             (match (stripln l) ;; remove ^M from some lines
+               ((ppcre "[^:]+/([^/:]+)[.]asd:[(]([-:a-z]*defsystem) ([:]name )*[#:\"]*([^[#:\"/ ]+)"
+                       asdname _ _ sysname)
+                (unless (equal asdname sysname)
+                  (list (list asdname sysname))))
+               ;;(_ (list (list :nomatch l)))
+               )))))

@@ -8,6 +8,7 @@
    #:install-all-quicklisp-provided-systems
    #:test-all-quicklisp-systems
    #:clean-old-quicklisp-systems
+   #:find-misnamed-secondary-asdf-systems-in-quicklisp
    #:quicklisp-software-directory
    #:qgrep
    #:systems-whose-name-doesnt-match-the-asd))
@@ -81,3 +82,24 @@
                   (list (list asdname sysname))))
                ;;(_ (list (list :nomatch l)))
                )))))
+
+(defun ql-dist-dir ()
+  (subpathname (user-homedir-pathname) "quicklisp/dists/quicklisp/"))
+
+(defun ql-projects-dir ()
+  (subpathname (user-homedir-pathname) "src/common-lisp/quicklisp-projects/"))
+
+(defun ql-source (x)
+  (read-file-line (subpathname (ql-projects-dir) (strcat "projects/" x "/source.txt"))))
+
+
+(defun find-misnamed-secondary-asdf-systems-in-quicklisp ()
+  (let* ((all-asds (directory (merge-pathnames* #p"software/**/*.asd" (ql-dist-dir))))
+         (defsystem-lines (run/lines `(grep "defsystem " ,@all-asds))))
+    (dolist (line defsystem-lines)
+      (match line
+        ((ppcre "^([^:]+)/([^:]+).asd:.*\\([^ ]*defsystem +[#:\"]*([^ \"]+)(?:$|[ \"])"
+                dir primary secondary)
+         (unless (or (equal primary secondary) (string-prefix-p (strcat primary "/") secondary))
+           (format t "Badly named system ~A in ~A/~A.asd~%"
+                   secondary dir primary)))))))
